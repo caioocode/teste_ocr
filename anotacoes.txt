@@ -1,0 +1,49 @@
+// código gerado pelo chat gpt
+
+>> arquivo main.py
+
+import tkinter as tk
+from tkinter import filedialog, messagebox, ttk
+from processamento_imagens import extrair_informacoes_chapas, extrair_numero_bundle, renomear_imagem
+
+# Funções de interface gráfica (mesmo código anterior)
+
+def processar_imagens():
+    """
+    Realiza o processo de extração e renomeação de imagens com base nos arquivos selecionados.
+    """
+    imagem_chapas = entry_imagem_chapas.get()
+    imagem_bundle = entry_imagem_bundle.get()
+    pasta_destino = entry_pasta_destino.get()
+
+    # Verificar se todos os campos estão preenchidos
+    if not imagem_chapas or not imagem_bundle or not pasta_destino:
+        messagebox.showerror("Erro", "Por favor, preencha todos os campos.")
+        return
+
+    # Iniciar a barra de progresso
+    progress_var.set(0)
+    progress_bar.start()
+
+    # Extrair o número do lote da imagem das chapas
+    numero_lote = extrair_informacoes_chapas(imagem_chapas)
+    if not numero_lote:
+        progress_bar.stop()
+        messagebox.showerror("Erro", "Não foi possível extrair o número do lote da imagem das chapas.")
+        return
+
+    # Extrair o número do bundle com base no número do lote
+    numero_bundle = extrair_numero_bundle(imagem_bundle, numero_lote)
+    if not numero_bundle:
+        progress_bar.stop()
+        messagebox.showerror("Erro", "Não foi possível encontrar o número do bundle associado ao lote.")
+        return
+
+    # Renomear a imagem das chapas
+    novo_caminho = renomear_imagem(imagem_chapas, numero_bundle, pasta_destino)
+    progress_bar.stop()
+    messagebox.showinfo("Sucesso", f"A imagem foi renomeada e movida para: {novo_caminho}")
+
+# Interface gráfica (mesmo código anterior)
+
+root.mainloop()
